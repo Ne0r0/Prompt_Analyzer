@@ -52,17 +52,25 @@ class TextProcessor(ABC):
 class TextAnalyzerCore(TextProcessor):
     _instance_count: int = 0
 
-# Inicilizuoja nauja "TextAnalyzerCore"
+# Inicilizuoja nauja "TextAnalyzerCore".
     def __init__(self, text: str = "") -> None:
         super().__init__(text) 
         TextAnalyzerCore._instance_count += 1
         logging.info("TextAnalyzer instance created.")
 
+# Grąžina tekstinę objekto reprezentaciją.
+    def __repr__(self) -> str:
+        return f"TextAnalyzerCore(text='{self.text[:30]}...', words={self.count_words()}, sentences={self.count_sentences()})"
+    
+# Grąžina bendrą žodžių skaičių tekste.
+    def __len__(self) -> int:
+        return self.count_words()
+    
 # Įgivendina privalomą 'clean_text() metodą.'
     def clean_text(self) -> str:
         return self.fixed_text
+    
 # Atnaujina tekstą.
-
     def update_text(self, new_text: str) -> None:
         self.text = new_text
         logging.info("Text update.")
@@ -70,7 +78,7 @@ class TextAnalyzerCore(TextProcessor):
 # Išvalo tekstą pagal taisykles.
     @property
     def fixed_text(self) -> str: 
-        text_with_commas = re.sub(r',(\S)', r', \1', self.text)
+        text_with_commas = re.sub(r',(\S)', r', \1', self.text) 
         return form_sentence(text_with_commas)
     
 # Grąžina sukurtų 'TextAnaluzerCore' objektų skaičių.
