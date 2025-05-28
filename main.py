@@ -11,7 +11,7 @@ class TextAnalyzerApp:
     def __init__(self) -> None:
         self.analyzer = None
 
-# Įveda naują tekstą ir sukuria alayzės objektą.
+# Enter new text and create an analysis object.
     def enter_text(self)  -> None:
         try:
             text_input: str = input("Enter your text (At least 5 sentences): ").strip()
@@ -23,7 +23,7 @@ class TextAnalyzerApp:
             logging.error(f"Text input error: {e}")
             print(f"Error: {e}")
 
-# Grąžina analizės ataskaitą JSON formatu.
+# Returns the analysis report in JSON.
     def show_report(self) -> None:
         if self.analyzer is None:
             logging.warning("Attempted to generate report with no text entered.")
@@ -40,17 +40,17 @@ class TextAnalyzerApp:
         print(json.dumps(report_data, indent=4))
         logging.info("Report generated successfully.")
 
-# Parodo žodžių skaičių.
+# Shows the number of words.
     def show_num_of_words(self) -> None:
         try:
             if self.analyzer is None:
                 raise RuntimeError("No text available. Please enter text first.")
-            print(f"Total words: {self.analyzer.count_words}")
+            print(f"Total words: {self.analyzer.count_words()}")
         except RuntimeError as e:
             logging.error(f"Word count error: {e}")
             print(f"Error: {e}")
 
-# Parodo sakinių skaičių tekste.
+# Shows the number of sentences in the text.
     def show_num_of_sentences(self) -> None:
         try:
             if self.analyzer is None:
@@ -60,7 +60,7 @@ class TextAnalyzerApp:
             logging.error(f"Sentence count error: {e}")
             print(f"Error: {e}")
 
-# Parodo kiek skaičių tekste.
+# Shows the count of numbers in the text.
     def show_count_of_num(self) -> None:
         try:
             if self.analyzer is None:
@@ -70,7 +70,7 @@ class TextAnalyzerApp:
             logging.error(f"Number count error: {e}")
             print(f"Error: {e}")
 
-# Parodo dažniausiai pasitaikantį žodį.    
+# Shows the most common word(s).   
     def show_most_common_words(self) -> None:
         try:
             if self.analyzer is None:
@@ -80,7 +80,7 @@ class TextAnalyzerApp:
             logging.error(f"Most common word error: {e}")
             print(f"Error: {e}")
 
-# CLI programa.
+# CLI application.
 def main() -> None:
     app: TextAnalyzerApp = TextAnalyzerApp()
 

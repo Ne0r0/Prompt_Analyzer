@@ -10,7 +10,7 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-# Duomenų klasė tekstui saugoti.
+# Data class for storing text.
 @dataclass
 class TextAnalyzerStorage:
     users_text: str
@@ -20,101 +20,102 @@ class TextAnalyzerStorage:
     count_of_num: int
     most_com_word: str
 
-# Pakeičia pirmą sakinį didžiąja raide, bet nekeičia žodžių po skaičiaus.
+# Capitalizes the first sentence but does not change words after a number.
 def cap_sentence(sentence: str) -> str:
     words =sentence.split()
     if words:
         words[0] = words[0].capitalize()
     return ' '.join(words)
 
-# Formatuoja sakinius: kiekvieno sakinio pradžia didžiąja raide.
+# Formats sentences: each sentence starts with a capital letter.
 def form_sentence(text: str) -> str:
     sentences = re.split(r'(?<=[.!?])\s+', text)
     formatted = [cap_sentence(s.strip()) for s in sentences]
     return ' '.join(formatted)
 
-# Abstrakti bazinė klasė teksto apdorojimui.
+# Abstract base class for text processing.
 class TextProcessor(ABC):
     def __init__(self, text: str) -> None:
         self.text: str = text
 
-# Sutvarko teksta pagal taisikles.
+# Cleans text according to rules.
     @abstractmethod
     def clean_text(self) -> str:
         pass
 
-# Atlieka pilna anlize ir grazina rezultatus.
+# Performs full analysis and returns results.
     @abstractmethod
     def analyze(self) -> TextAnalyzerStorage:
         pass
 
-# Pagrindine teksto analizes klase, paveldi "TextProcessor".
+# Main text analysis class, inherits from "TextProcessor".
 class TextAnalyzerCore(TextProcessor):
     _instance_count: int = 0
 
-# Inicilizuoja nauja "TextAnalyzerCore".
+# Initializes a new "TextAnalyzerCore".
     def __init__(self, text: str = "") -> None:
         super().__init__(text) 
         TextAnalyzerCore._instance_count += 1
         logging.info("TextAnalyzer instance created.")
 
-# Grąžina tekstinę objekto reprezentaciją.
+# Returns the textual representation of the object.
     def __repr__(self) -> str:
         return f"TextAnalyzerCore(text='{self.text[:30]}...', words={self.count_words()}, sentences={self.count_sentences()})"
     
-# Grąžina bendrą žodžių skaičių tekste.
+# Returns the total word count in the text.
     def __len__(self) -> int:
         return self.count_words()
     
-# Įgivendina privalomą 'clean_text() metodą.'
+# Implements the required 'clean_text()' method.
     def clean_text(self) -> str:
         return self.fixed_text
     
-# Atnaujina tekstą.
+# Updates the text.
     def update_text(self, new_text: str) -> None:
         self.text = new_text
         logging.info("Text update.")
 
-# Išvalo tekstą pagal taisykles.
+# Cleans the text according to rules.
     @property
     def fixed_text(self) -> str: 
         text_with_commas = re.sub(r',(\S)', r', \1', self.text) 
         return form_sentence(text_with_commas)
     
-# Grąžina sukurtų 'TextAnaluzerCore' objektų skaičių.
+# Returns the number of 'TextAnalyzerCore' instances created.
     @staticmethod
     def get_instance_count() -> int:
         return TextAnalyzerCore._instance_count 
     
-# Skaičiuoja žodžius tekste.
+# Counts words in the text.
     def count_words(self) -> int:
         words = re.findall(r'\b[a-zA-Z]+\b', self.text)
         return len(words)
     
-# Skaičiuoja sakinius tekste.
+# Counts sentences in the text.
     def count_sentences(self) -> int:
         sentences = re.split(r'[.!?]+', self.text)
         sentences = [s for s in sentences if s.strip()]
         return len(sentences)
     
-# Skaičiuoja skaičius tekste.
+# Counts numbers in the text.
     def count_numbers(self) -> int:
         numbers = re.findall(r'\d+', self.text)
         return len(numbers)
     
-# Randa dažniausiai pasikartojantį žodį iš teksto.
+# Finds the most common word(s) in the text.
     def most_common_word(self) -> str:
-        words: List[str] = re.findall(r'\b\w+\b', self.text.lower())  # Pašalina skyrybos ženklus
-        if not words:
-            return ""  # Jei nėra žodžių, grąžiname tuščią eilutę
+        words: List[str] = re.findall(r'\b\w+\b', self.text.lower())  # Removes punctuation
+        word_counts: Dict[str, int] = {}  # Create a dictionary to count word frequencies
         
-        word_counts: Dict[str, int] = {}  # Sukuriame žodyną žodžių dažnumui skaičiuoti
         for word in words:
-            word_counts[word] = word_counts.get(word, 0) + 1  # Didiname skaičiavimą
+            word_counts[word] = word_counts.get(word, 0) + 1  # Increase the count
 
-        return max(word_counts, key=lambda word: word_counts[word]) # Grąžiname žodį su didžiausiu pasikartojimų skaičiumi
+        max_count = max(word_counts.values()) # Find the maximum number of occurrences
+        most_common_words = [word for word, count in word_counts.items() if count == max_count] # Select all equivalent
+        
+        return ", ".join(most_common_words) # Return all words with the same count
 
-# Atlieka pilną analizę ir grąžina rezultatus.
+# Performs a full analysis and returns results.
     def analyze(self) -> TextAnalyzerStorage:
         analysis = TextAnalyzerStorage(
             users_text=self.text,
