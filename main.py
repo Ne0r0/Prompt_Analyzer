@@ -117,6 +117,7 @@ def main() -> None:
                 raise ValueError("Invalid input. Please try again.")
         except ValueError as e:
             logging.error(f"Invalid menu choise: {e}")
+            print(f"Invalid menu choise: {e}")
         except Exception as e:
             logging.critical(f"Error: {e}")
             print(f"Error: {e}")
