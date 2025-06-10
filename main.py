@@ -1,12 +1,8 @@
-import logging
 import json
 from prompt_analyzer import TextAnalyzerCore
+from logger import logger
 
-logging.basicConfig(
-    level=logging.INFO,
-    filename="logs/app.log",
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
+
 class TextAnalyzerApp:
     def __init__(self) -> None:
         self.analyzer = None
@@ -20,13 +16,13 @@ class TextAnalyzerApp:
             self.analyzer = TextAnalyzerCore(text_input)
             print("Text entered successfully!")
         except ValueError as e:
-            logging.error(f"Text input error: {e}")
+            logger.error(f"Text input error: {e}")
             print(f"Error: {e}")
 
 # Returns the analysis report in JSON.
     def show_report(self) -> None:
         if self.analyzer is None:
-            logging.warning("Attempted to generate report with no text entered.")
+            logger.warning("Attempted to generate report with no text entered.")
             print("No text available. Please enter text first")
             return
         
@@ -38,52 +34,53 @@ class TextAnalyzerApp:
             "most_common_word/words": self.analyzer.most_common_word()
         }
         print(json.dumps(report_data, indent=4))
-        logging.info("Report generated successfully.")
+        logger.info("Report generated successfully.")
 
 # Shows the number of words.
     def show_num_of_words(self) -> None:
         try:
             if self.analyzer is None:
-                raise RuntimeError("No text available. Please enter text first.")
+                raise AttributeError("No text available. Please enter text first.")
             print(f"Total words: {self.analyzer.count_words()}")
-        except RuntimeError as e:
-            logging.error(f"Word count error: {e}")
+        except AttributeError as e:
+            logger.error(f"Word count error: {e}")
             print(f"Error: {e}")
 
 # Shows the number of sentences in the text.
     def show_num_of_sentences(self) -> None:
         try:
             if self.analyzer is None:
-                raise RuntimeError("No text available. Please enter text first.")
+                raise AttributeError("No text available. Please enter text first.") #pasitikrinti dar karta i kita error
             print(f"Total sentences: {self.analyzer.count_sentences()}")
-        except RuntimeError as e:
-            logging.error(f"Sentence count error: {e}")
+        except AttributeError as e:
+            logger.error(f"Sentence count error: {e}")
             print(f"Error: {e}")
 
 # Shows the count of numbers in the text.
     def show_count_of_num(self) -> None:
         try:
             if self.analyzer is None:
-                raise RuntimeError("No text available. Please enter text first.")
+                raise AttributeError("No text available. Please enter text first.")
             print(f"Count of numbers: {self.analyzer.count_numbers()}")
-        except RuntimeError as e:
-            logging.error(f"Number count error: {e}")
+        except AttributeError as e:
+            logger.error(f"Number count error: {e}")
             print(f"Error: {e}")
 
 # Shows the most common word(s).   
     def show_most_common_words(self) -> None:
         try:
             if self.analyzer is None:
-                raise RuntimeError("No text available. Please enter text first.")
+                raise AttributeError("No text available. Please enter text first.")
             print(f"Most common word(s): {self.analyzer.most_common_word()}")
-        except RuntimeError as e:
-            logging.error(f"Most common word error: {e}")
+        except AttributeError as e:
+            logger.error(f"Most common word error: {e}")
             print(f"Error: {e}")
 
 # CLI application.
 def main() -> None:
     app: TextAnalyzerApp = TextAnalyzerApp()
-
+    logger.info("CLI application started")
+    
     while True:
         print("\n===== Prompt Text Analyzer =====")
         print("1. Enter new text (minimum 5 sentences)")
@@ -110,16 +107,16 @@ def main() -> None:
             elif choice == "6":
                 app.show_most_common_words()
             elif choice == "0":
-                logging.info("User exited the application.")
+                logger.info("User exited the application.")
                 print("See you later 👋👋")
                 break
             else:
                 raise ValueError("Invalid input. Please try again.")
         except ValueError as e:
-            logging.error(f"Invalid menu choise: {e}")
+            logger.error(f"Invalid menu choise: {e}")
             print(f"Invalid menu choise: {e}")
         except Exception as e:
-            logging.critical(f"Error: {e}")
+            logger.critical(f"Error: {e}")
             print(f"Error: {e}")
 
 if __name__ == "__main__":

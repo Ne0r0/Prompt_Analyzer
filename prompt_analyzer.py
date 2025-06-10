@@ -1,14 +1,9 @@
-import logging
 import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Dict, List
+from logger import logger
 
-logging.basicConfig(
-    level=logging.INFO,
-    filename="logs/app.log",
-    format="%(asctime)s - %(levelname)s - %(message)s"
-)
 
 # Data class for storing text.
 @dataclass
@@ -56,7 +51,7 @@ class TextAnalyzerCore(TextProcessor):
     def __init__(self, text: str = "") -> None:
         super().__init__(text) 
         TextAnalyzerCore._instance_count += 1
-        logging.info("TextAnalyzer instance created.")
+        logger.info("TextAnalyzer instance created.")
 
 # Returns the textual representation of the object.
     def __repr__(self) -> str:
@@ -73,7 +68,7 @@ class TextAnalyzerCore(TextProcessor):
 # Updates the text.
     def update_text(self, new_text: str) -> None:
         self.text = new_text
-        logging.info("Text update.")
+        logger.info("Text update.")
 
 # Cleans the text according to rules.
     @property
@@ -115,7 +110,7 @@ class TextAnalyzerCore(TextProcessor):
         
         return ", ".join(most_common_words) # Return all words with the same count
 
-# Performs a full analysis and returns results.
+# Performs a full analysis and returns results. paba
     def analyze(self) -> TextAnalyzerStorage:
         analysis = TextAnalyzerStorage(
             users_text=self.text,
