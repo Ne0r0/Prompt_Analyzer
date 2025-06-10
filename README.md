@@ -20,3 +20,9 @@ Code must include:
  - Logging setup
  - Error handling 
  - Github Repo
+
+ # Update
+ Refactor prompt analyzer. Move back end logic to Flask application and dockerize it. 
+ Mongo DB part will follow later with lectures.
+ The application itself must serve only UI and all data operations must be served through container as API layer.
+ 
