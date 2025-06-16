@@ -17,7 +17,7 @@ class TextAnalyzerStorage:
 
 # Capitalizes the first sentence but does not change words after a number.
 def cap_sentence(sentence: str) -> str:
-    words =sentence.split()
+    words = sentence.split()
     if words:
         words[0] = words[0].capitalize()
     return ' '.join(words)
@@ -110,9 +110,9 @@ class TextAnalyzerCore(TextProcessor):
         
         return ", ".join(most_common_words) # Return all words with the same count
 
-# Performs a full analysis and returns results. paba
+# Performs a full analysis and returns results.
     def analyze(self) -> TextAnalyzerStorage:
-        analysis = TextAnalyzerStorage(
+        return TextAnalyzerStorage(
             users_text=self.text,
             fixed_text=self.fixed_text,
             num_of_words=self.count_words(),
@@ -120,4 +120,4 @@ class TextAnalyzerCore(TextProcessor):
             count_of_num=self.count_numbers(),
             most_com_word=self.most_common_word()
         )
-        return analysis
+

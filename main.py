@@ -8,116 +8,51 @@ class TextAnalyzerApp:
         self.analyzer = None
 
 # Enter new text and create an analysis object.
-    def enter_text(self)  -> None:
-        try:
-            text_input: str = input("Enter your text (At least 5 sentences): ").strip()
-            if len(text_input) < 15:
-                raise ValueError("Text is to short. Please provide at least 5 sentences.")
-            self.analyzer = TextAnalyzerCore(text_input)
-            print("Text entered successfully!")
-        except ValueError as e:
-            logger.error(f"Text input error: {e}")
-            print(f"Error: {e}")
+    def enter_text(self, text: str)  -> None:
+            if len(text) < 15:
+                raise ValueError("Text is too short. Please provide at least 5 sentences.")
+            self.analyzer = TextAnalyzerCore(text)
+            logger.info("Text entered successfully.")
+            
 
 # Returns the analysis report in JSON.
-    def show_report(self) -> None:
+    def get_report(self) -> dict[str, str | int]:
         if self.analyzer is None:
             logger.warning("Attempted to generate report with no text entered.")
-            print("No text available. Please enter text first")
-            return
+            return {"error": "No text available. Please enter text first."}
         
-        report_data: dict[str, str | int] = {
+        return {
             "fixed_text": self.analyzer.fixed_text,
             "number_of_words": self.analyzer.count_words(),
             "number_of_sentences": self.analyzer.count_sentences(),
             "count_of_numbers": self.analyzer.count_numbers(),
             "most_common_word/words": self.analyzer.most_common_word()
         }
-        print(json.dumps(report_data, indent=4))
-        logger.info("Report generated successfully.")
 
 # Shows the number of words.
-    def show_num_of_words(self) -> None:
-        try:
+    def show_num_of_words(self) -> int | str:
             if self.analyzer is None:
-                raise AttributeError("No text available. Please enter text first.")
-            print(f"Total words: {self.analyzer.count_words()}")
-        except AttributeError as e:
-            logger.error(f"Word count error: {e}")
-            print(f"Error: {e}")
+                logger.warning("Attempted to get word count with no text entered.")
+                return "No text available. Please enter text first."
+            return self.analyzer.count_words()
 
 # Shows the number of sentences in the text.
-    def show_num_of_sentences(self) -> None:
-        try:
+    def show_num_of_sentences(self) -> int | str:
             if self.analyzer is None:
-                raise AttributeError("No text available. Please enter text first.") #pasitikrinti dar karta i kita error
-            print(f"Total sentences: {self.analyzer.count_sentences()}")
-        except AttributeError as e:
-            logger.error(f"Sentence count error: {e}")
-            print(f"Error: {e}")
+                logger.warning("Attempted to get sentence count with no text entered.")
+                return "No text available. Please enter text first."
+            return self.analyzer.count_sentences()
 
 # Shows the count of numbers in the text.
-    def show_count_of_num(self) -> None:
-        try:
-            if self.analyzer is None:
-                raise AttributeError("No text available. Please enter text first.")
-            print(f"Count of numbers: {self.analyzer.count_numbers()}")
-        except AttributeError as e:
-            logger.error(f"Number count error: {e}")
-            print(f"Error: {e}")
-
+    def show_count_of_num(self) -> int | str:
+        if self.analyzer is None:
+            logger.warning("Attempted to get sentence count with no text entered.")
+            return "No text available. Please enter text first."
+        return self.analyzer.count_numbers()
+         
 # Shows the most common word(s).   
-    def show_most_common_words(self) -> None:
-        try:
+    def show_most_common_words(self) -> str | list[str]:
             if self.analyzer is None:
-                raise AttributeError("No text available. Please enter text first.")
-            print(f"Most common word(s): {self.analyzer.most_common_word()}")
-        except AttributeError as e:
-            logger.error(f"Most common word error: {e}")
-            print(f"Error: {e}")
-
-# CLI application.
-def main() -> None:
-    app: TextAnalyzerApp = TextAnalyzerApp()
-    logger.info("CLI application started")
-    
-    while True:
-        print("\n===== Prompt Text Analyzer =====")
-        print("1. Enter new text (minimum 5 sentences)")
-        print("2. Get Report")
-        print("3. Show number of words")
-        print("4. Show number of sentences")
-        print("5. Show count of numbers")
-        print("6. Show most common word or words")
-        print("0. Exit")
-        
-        choice = input("Enter your choice: ")
-
-        try:
-            if choice == "1":
-                app.enter_text()
-            elif choice == "2":
-                app.show_report()
-            elif choice == "3":
-                app.show_num_of_words()
-            elif choice == "4":
-                app.show_num_of_sentences()
-            elif choice == "5":
-                app.show_count_of_num()
-            elif choice == "6":
-                app.show_most_common_words()
-            elif choice == "0":
-                logger.info("User exited the application.")
-                print("See you later 👋👋")
-                break
-            else:
-                raise ValueError("Invalid input. Please try again.")
-        except ValueError as e:
-            logger.error(f"Invalid menu choise: {e}")
-            print(f"Invalid menu choise: {e}")
-        except Exception as e:
-            logger.critical(f"Error: {e}")
-            print(f"Error: {e}")
-
-if __name__ == "__main__":
-    main()
+                logger.warning("Attempted to get most common word(s) with no text entered.")
+                return "No text available. Please enter text first."
+            return self.analyzer.most_common_word()
