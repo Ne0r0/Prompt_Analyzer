@@ -1,0 +1,15 @@
+# Ignore virtual environments
+venv/
+*.pyc
+__pycache__/
+
+# Ignore log files and stored data
+logs/
+data/
+
+# Ignore Git-related files
+.git
+.gitignore
+
+# Ignore environment configuration files
+.env
