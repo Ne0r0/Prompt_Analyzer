@@ -1,4 +1,3 @@
-import json
 from prompt_analyzer import TextAnalyzerCore
 from logger import logger
 

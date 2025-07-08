@@ -26,3 +26,5 @@ Code must include:
  Mongo DB part will follow later with lectures.
  The application itself must serve only UI and all data operations must be served through container as API layer.
  
+ # Update
+ Change docker conteiner from Flask to FastAPI

@@ -10,8 +10,8 @@ COPY . /app
 # Install dependencies from requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose the Flask default port
+# Expose the FastAPI default port
 EXPOSE 5000
 
-# Define the command to run the Flask app
-CMD ["python", "flask_app.py"]
+# Define the command to run the FastAPI
+CMD ["uvicorn", "analyzer_api:app", "--host", "0.0.0.0", "--port", "5000"]
